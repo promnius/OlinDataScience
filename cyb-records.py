@@ -44,7 +44,12 @@ class Table(object):
         """
 
         """Connect to server"""
-        cnxn = pyodbc.connect('DRIVER={SQL Server}; SERVER=medtweb2; DATABASE=MachineData; UID=username; PWD=password')
+        # Prompts for user name and password so that we don't need to include sensitive data in files that are online.
+        username = raw_input("Please enter your username: ")
+        password = raw_input("Please enter your password: ")
+        connect_string = 'DRIVER={SQL Server}; SERVER=medtweb2; DATABASE=MachineData; UID=' + username + '; PWD=' + password
+        #print connect_string
+        cnxn = pyodbc.connect(connect_string)
         cursor = cnxn.cursor()
 
         """Select correct table"""
