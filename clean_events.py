@@ -36,6 +36,7 @@ def CleanEvents(records):
 
 	return clean_events_list
 
+
 def PrintRecords(records):
 	#for field in records[0].__dict__.keys():
 		#print field + " | ",
@@ -53,6 +54,7 @@ def PrintRecords(records):
 		print "~~~~"
 		if record_number >= 100:
 			break
+
 
 def main():
     evs = cyb_records.Events()

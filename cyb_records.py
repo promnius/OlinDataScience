@@ -5,8 +5,7 @@ Stats
 import pyodbc
 import sys
 import os
-from operator 
-import itemgetter, attrgetter
+from operator import itemgetter, attrgetter
 
 class Record(object):
     """Represents a record."""
