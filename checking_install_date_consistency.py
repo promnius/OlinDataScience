@@ -119,7 +119,13 @@ def main():
     #print ("Machine " + str(machines_events_list[0][0].sn) + " was " + str(percent) +" percent latent (cuttoff at " 
     #       + str(max_latency) + " seconds latent) and had an average latency of " + str(ave_latent) + " seconds")
     
+    machine_entries_length = []
+    for machine in machines_events_list:
+        machine_entries_length.append((len(machine),machine))
+    machine_entries_length = sorted(machine_entries_length)
     
+    for machine in machine_entries_length:
+        print (str(machine[1][0].sn)+ " is in the stats database " + str(machine[0]) + " times.")
 
 
     
