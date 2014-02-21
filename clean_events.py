@@ -41,18 +41,18 @@ def PrintRecords(records):
 	#for field in records[0].__dict__.keys():
 		#print field + " | ",
 
-	print "sn | timestamp"
+	print "sn | error | timestamp"
 	print "----"
 
 	record_number = 0
 
 	for record in records:
-		print str(record.sn) + " " + str(record.timestamp)
+		print str(record.sn) + " " + str(record.description) + "           " + str(record.timestamp)
 		record_number = record_number + 1
 		#for key in record.__dict__.keys():
 			#print str(getattr(record, key)) + " | ",
-		print "~~~~"
-		if record_number >= 100:
+		#print "~~~~"
+		if record_number >= 15:
 			break
 
 
