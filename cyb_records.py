@@ -111,7 +111,7 @@ class Machines(Table):
     """Represents the current_system_infos table."""
 
     def ReadRecords(self):
-        self.ReadDatabase(self.GetFields(), Machine)
+        self.ReadDatabase(self.GetFields(), Machine, "ORDER BY product_number")
 
     def GetFields(self):
         """Returns a tuple specifying the fields to extract.
@@ -143,7 +143,7 @@ class Stats(Table):
     """Represents the stats table."""
 
     def ReadRecords(self):
-        self.ReadDatabase(self.GetFields(), Stat)
+        self.ReadDatabase(self.GetFields(), Stat, "ORDER BY sn, created_at")
 
     def GetFields(self):
         return [
@@ -154,18 +154,6 @@ class Stats(Table):
     #mach = Machines()
     #mach.ReadRecords()
     #print 'Number of machines', len(mach.records)
-    
-    #evs = Events()
-    #evs.ReadRecords()
-    #print dir(evs.records)
-
-    #print 'Number of events', len(evs.records)
-
-    #statistics = Stats()
-    #statistics.ReadRecords()
-    #print 'Number of statistics', len(statistics.records)
 
 #if __name__ == '__main__':
     #main()
-
-#addd
