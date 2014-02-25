@@ -31,7 +31,7 @@ class Table(object):
     def __len__(self):
         return len(self.records)
 
-    def ReadDatabase(self, fields, constructor, queryOptions=""):
+    def ReadDatabase(self, fields, constructor, queryOptions="", username = None, password = None):
         """Reads a compressed data file builds one object per record.
 
         Args:
@@ -43,8 +43,17 @@ class Table(object):
 
         """Connect to server"""
         # Prompts for user name and password so that we don't need to include sensitive data in files that are online.
-        username = raw_input("Please enter your username: ")
-        password = raw_input("Please enter your password: ")
+        if username == None:
+            username = raw_input("Please enter your username: ")
+        else:
+            pass # username already exists
+        if password == None:
+            password = raw_input("Please enter your password: ")
+        else:
+            pass # password already exists
+            
+        
+        
         connect_string = 'DRIVER={SQL Server}; SERVER=medtweb2; DATABASE=MachineData; UID=' + username + '; PWD=' + password
         #print connect_string
         cnxn = pyodbc.connect(connect_string)
@@ -110,8 +119,8 @@ class Table(object):
 class Machines(Table):
     """Represents the current_system_infos table."""
 
-    def ReadRecords(self):
-        self.ReadDatabase(self.GetFields(), Machine, "ORDER BY product_number")
+    def ReadRecords(self, password = None, username = None):
+        self.ReadDatabase(self.GetFields(), Machine, "ORDER BY product_number", password = password, username = username)
 
     def GetFields(self):
         """Returns a tuple specifying the fields to extract.
@@ -131,8 +140,8 @@ class Events(Table):
     Sort query in database
     """
 
-    def ReadRecords(self):
-        self.ReadDatabase(self.GetFields(), Event, "ORDER BY sn, timestamp")
+    def ReadRecords(self, password = None, username = None):
+        self.ReadDatabase(self.GetFields(), Event, "ORDER BY sn, timestamp", username = username, password = password)
 
     def GetFields(self):
         return [
@@ -142,12 +151,12 @@ class Events(Table):
 class Stats(Table):
     """Represents the stats table."""
 
-    def ReadRecords(self):
-        self.ReadDatabase(self.GetFields(), Stat, "ORDER BY sn, created_at")
+    def ReadRecords(self, password = None, username = None):
+        self.ReadDatabase(self.GetFields(), Stat, "ORDER BY sn, created_at", username = username, password = password)
 
     def GetFields(self):
         return [
-            "id", "sn", "moves", "install_date", "created_at", "received_at"
+            "id", "sn", "moves", "install_date", "created_at", "received_at", 'up_time'
             ] #just remove fields you don't need
 
 #def main():
