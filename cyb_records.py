@@ -152,12 +152,13 @@ class Stats(Table):
     """Represents the stats table."""
 
     def ReadRecords(self, password = None, username = None):
-        self.ReadDatabase(self.GetFields(), Stat, "INNER JOIN current_system_infos ON stats.sn=current_system_infos.sn ORDER BY product_number, stats.sn, stats.up_time", username = username, password = password)
+        self.ReadDatabase(self.GetFields(), Stat, "INNER JOIN current_system_infos ON stats.sn=current_system_infos.sn WHERE product_number IS NOT NULL ORDER BY product_number, stats.sn, stats.up_time", username = username, password = password)
 
     def GetFields(self):
         return [
-            "id", "product_number", "sn", "moves", "install_date", "created_at", "received_at", 'up_time','dist'
+            "id", "product_number", "sn", "moves", "install_date", "created_at", "received_at", 'up_time','dist', 'motor_time'
             ] #just remove fields you don't need
+
 
 #def main():
     #mach = Machines()
