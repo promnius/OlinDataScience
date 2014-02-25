@@ -156,7 +156,7 @@ class Stats(Table):
 
     def GetFields(self):
         return [
-            "id", "product_number", "sn", "moves", "install_date", "created_at", "received_at", 'up_time','dist', 'motor_time'
+            "id", "product_number", "sn", "moves", "install_date", "created_at", "received_at", 'up_time','dist', 'motor_time', 'avg_dist'
             ] #just remove fields you don't need
 
 
