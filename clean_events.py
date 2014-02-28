@@ -20,7 +20,6 @@ def CleanEvents(records):
 	for record in records:
 		sn = record.sn
 		timestamp = int(time.mktime(record.timestamp.timetuple()))
-		#timestamp = time.mktime(datetime.datetime.strptime(record.timestamp, "%Y-%m-%d %H:%M:%S").timetuple())
 
 		if sn == prev_sn:
 			if (timestamp - prev_timestamp) >= TIME_RANGE:
