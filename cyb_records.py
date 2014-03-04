@@ -141,11 +141,11 @@ class Events(Table):
     """
 
     def ReadRecords(self, password = None, username = None):
-        self.ReadDatabase(self.GetFields(), Event, "ORDER BY sn, timestamp", username = username, password = password)
+        self.ReadDatabase(self.GetFields(), Event, "INNER JOIN current_system_infos ON event_infos.sn=current_system_infos.sn WHERE product_number IS NOT NULL ORDER BY event_infos.sn", username = username, password = password)
 
     def GetFields(self):
         return [
-            "id", "sn", "event", "event_id", "description", "timestamp", "created_at", "event_type", "received_at"
+            "id", "sn", "event", "event_id", "description", "timestamp", "created_at", "event_type", "received_at", "product_number", "facility_id"
             ] #just remove fields you don't need
 
 class Stats(Table):
