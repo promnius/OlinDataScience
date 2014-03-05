@@ -15,9 +15,11 @@ def CdfPerDay(records):
 
 	# Make dictionary with dates
 	for record in records:
-		if record.product_configuration == "8114NZJ":
+		if record.facility_id == 12:
+		#if record.product_configuration == "8114NZJ":
 			day = time.strftime("%A", record.in_service.timetuple())
 			day_list = DayDict.get(day)
+			#if record.avg_dist < 50000:
 			day_list.append(float(record.avg_dist))
 			DayDict[day] = day_list
 
@@ -38,7 +40,7 @@ def main():
 
 	cdf = CdfPerDay(all_recs.records)
 	myplot.Cdfs(cdf)
-	myplot.Show(title="CDF: daily usage of treadmills at Planet Fitness", xlabel = 'Distance (in m / day)', ylabel = 'Percentile')
+	myplot.Show(title="CDF: daily usage of machines at the YMCA", xlabel = 'Distance (in m / day)', ylabel = 'Percentile')
 
 if __name__ == '__main__':
     main()

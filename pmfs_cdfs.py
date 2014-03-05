@@ -171,7 +171,7 @@ def Pmf_errors(all_records):
 		for code in error_frequency.keys():
 			if error_frequency[code] == max_unique_error_occurance:
 				most_occured_error.append(code)
-		print("Machine: " + str(current_sn) + "threw error: " + str(most_occured_error) + " " + str(max_unique_error_occurance) + " times. This was the most of one type of error.")
+		print("Machine: " + str(current_sn) + "Site code: " + str(record.facility_id) + "threw error: " + str(most_occured_error) + " " + str(max_unique_error_occurance) + " times. This was the most of one type of error.")
 		max_unique_errors = len(error_frequency.keys())
 		print("and this machine had " + str(max_unique_errors) + " unique types of errors.")
 		

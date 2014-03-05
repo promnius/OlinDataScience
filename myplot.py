@@ -42,7 +42,9 @@ class Brewer(object):
               '#7FCDBB',
               '#C7E9B4',
               '#EDF8B1',
-              '#FFFFD9']
+              '#FFFFD9',
+              '#000000'
+              ]
 
     # lists that indicate which colors to use depending on how many are used
     which_colors = [[],
@@ -53,6 +55,8 @@ class Brewer(object):
                     [0, 2, 3, 5, 6],
                     [0, 2, 3, 4, 5, 6],
                     [0, 1, 2, 3, 4, 5, 6],
+                    [0, 1, 2, 3, 4, 5, 6, 7],
+                    [0, 1, 2, 3, 4, 5, 6, 7, 8]
                     ]
 
     @classmethod
