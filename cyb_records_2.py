@@ -165,9 +165,9 @@ class Errors(Table):
     """
 
     def ReadRecords(self, password = None, username = None):
-        self.ReadDatabase(self.GetFields(), Event, "INNER JOIN stats ON (event_infos.timestamp=(stats.install_date + stats.in_service) AND event_infos.sn = stats.sn) ORDER BY event_infos.sn", username = username, password = password)
+        self.ReadDatabase(self.GetFields(), Event, "INNER JOIN stats ON (event_infos.timestamp < (stats.install_date + stats.in_service + 43200) AND event_infos.timestamp > (stats.install_date + stats.in_service - 43200) AND event_infos.sn = stats.sn) ORDER BY event_infos.sn", username = username, password = password)
 
     def GetFields(self):
         return [
-            "id", "sn", "event", "event_id", "description", "timestamp", "event_type", "in_service", "install_date"
+            "id", "sn", "event", "event_id", "description", "timestamp", "event_type", "in_service", "install_date", "dist"
             ] #just remove fields you don't need

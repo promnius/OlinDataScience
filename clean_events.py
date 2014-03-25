@@ -8,7 +8,7 @@ TIME_RANGE = 3600
 
 def CleanEvents(records):
 	"""
-	Change yyyy-mm-dd hh:mm:ss to seconds since January 1, 1970.
+	Change yyyy-mm-dd hh:mm:ss to seconds since epoch 2008 Jan 01.
 	Check if events with same serial number are within the range (i.e. duplicates), and add all unique events to new list.
 	"""
 
