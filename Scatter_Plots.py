@@ -3,7 +3,6 @@
 import cyb_records
 import time, datetime
 import clean_events
-TIME_RANGE = 3600
 import matplotlib.pyplot as plt
 import checking_install_date_consistency as prep
 import clean_events
@@ -72,7 +71,9 @@ def main():
     evs = cyb_records.Events()
     evs.ReadRecords(username = myusername, password = mypassword)
 
-    clean_records = clean_events.CleanEvents(evs.records)
+    #clean_records = clean_events.CleanEvents(evs.records)
+    clean_records = evs.records
+    print ("Total number of cleaned errors: " + str(len(clean_records)))
     
     errors = []
     
@@ -148,18 +149,39 @@ def main():
     # plotting
     #plt.scatter(real_up_time, real_error_count, s = 100)
     #plt.scatter(fake_up_time, fake_error_count,  s = 20)
-
+    
+    
+    # PUT THIS IN A FUNCTION!! NO NEED TO HAVE 10 copies!
+    up_time9_kilos = []
+    for time in up_time9:
+        up_time9_kilos.append(time/1000.0)
+    up_time10_kilos = []
+    for time in up_time10:
+        up_time10_kilos.append(time/1000.0)
+    up_time11_kilos = []
+    for time in up_time11:
+        up_time11_kilos.append(time/1000.0)
+    up_time12_kilos = []
+    for time in up_time12:
+        up_time12_kilos.append(time/1000.0)
+        
+    #plt.scatter(up_time9_kilos, error_count9, facecolor= 'r', s = 300, label= 'site code 9')
+    #plt.scatter(up_time10_kilos, error_count10, facecolor= 'b', s = 300, label = 'site code 10')
+    #plt.scatter(up_time11_kilos, error_count11, facecolor= 'g', s = 300, label = 'site code 11')
+    #plt.scatter(up_time12_kilos, error_count12, facecolor= 'k', s = 300, label = 'site code 12')
+ 
+    # unfiltered version
     plt.scatter(up_time9, error_count9, facecolor= 'r', s = 300, label= 'site code 9')
     plt.scatter(up_time10, error_count10, facecolor= 'b', s = 300, label = 'site code 10')
     plt.scatter(up_time11, error_count11, facecolor= 'g', s = 300, label = 'site code 11')
     plt.scatter(up_time12, error_count12, facecolor= 'k', s = 300, label = 'site code 12')
     
     plt.legend()
-    plt.xlabel('Distance (Meters?)', fontsize = 24)
+    plt.xlabel('Distance (kilometers)', fontsize = 24)
     plt.ylabel('Number of Errors', fontsize = 24)
     plt.title('Errors vs. Distance, by Machine and Site', fontsize = 30)
     plt.xlim([0, 100000000])
-    plt.ylim([0,60])
+    plt.ylim([0,600])
     plt.show()
     
 if __name__ == '__main__':
