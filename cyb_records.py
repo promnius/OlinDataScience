@@ -159,11 +159,28 @@ class Stats(Table):
             "id", "product_number", "sn", "moves", "install_date", "created_at", "received_at", 'up_time','dist', 'motor_time', 'avg_dist', 'facility_id', 'product_configuration', 'in_service'
             ] #just remove fields you don't need
 
+class Errors(Table):
+    """Represents the event_infos table
+    Sort query in database
+    """
 
-#def main():
-    #mach = Machines()
-    #mach.ReadRecords()
-    #print 'Number of machines', len(mach.records)
+    def ReadRecords(self, password = None, username = None):
+        self.ReadDatabase(self.GetFields(), Event, "event_infos", username = username, password = password)
 
-#if __name__ == '__main__':
-    #main()
+    def GetFields(self):
+        return [
+            "id", "sn", "event", "event_id", "description", "timestamp", "event_type", "created_at", "received_at"
+            ] #just remove fields you don't need
+
+class Events_and_stats(Table):
+    """Represents the event_infos table
+    Sort query in database
+    """
+
+    def ReadRecords(self, password = None, username = None):
+        self.ReadDatabase(self.GetFields(), Event, "INNER JOIN stats ON (event_infos.timestamp < (stats.install_date + stats.in_service + 43200) AND event_infos.timestamp > (stats.install_date + stats.in_service - 43200) AND event_infos.sn = stats.sn) ORDER BY event_infos.sn", username = username, password = password)
+
+    def GetFields(self):
+        return [
+            "id", "sn", "event", "event_id", "description", "timestamp", "event_type", "in_service", "install_date", "dist"
+            ] #just remove fields you don't need
