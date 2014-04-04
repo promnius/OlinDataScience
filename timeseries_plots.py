@@ -2,27 +2,28 @@
 Errors and distance traveled
 """
 
-import cyb_records_3
+import cyb_records
 import thinkstats2
 import clean_events
 import time, datetime
 import checking_install_date_consistency as prep
 import matplotlib.pyplot as plt
 
+'''This function is in the wrong file- should maybe be in clean records, or some kind of sort records.
+maybe the same file as the 'sort by machines' is in.'''
+'''This function takes the machines database, and returns a dictionary containing all of the machine serial
+numbers in the database, sorted by site code. Note that the 'sort by site code' part is currently not adaptive-
+it uses a list of known site codes rather than reading them from the database. This can be improved in the future.
+Efficiency is also low- by using the right SQL query, the complexity of this algorithem could drop significantly.'''
+'''Also, could make this a class that stores the sns, rather than re-running it every time. it would be less server 
+load that way.'''
+def all_sns_by_site(username = None, password = None):
+    collecting_site_codes = cyb_records.Machines()
+    if password != None and username != None:
+        collecting_site_codes.ReadRecords(username = username, password = password)
+    else:
+        collecting_site_codes.ReadRecords()
 
-def main():
-    colors = ['b', 'g', 'r', 'k', 'm']
-    
-    all_recs = cyb_records_3.Errors()
-    all_recs.ReadRecords()
-    print 'Number of total Events', len(all_recs.records)
-
-    #clean_recs = clean_events.CleanEvents(all_recs.records)
-    clean_recs = all_recs.records
-    print 'Number of clean events', len(clean_recs)
-    
-    collecting_site_codes = cyb_records_3.Machines()
-    collecting_site_codes.ReadRecords()
     all_serial_numbers = []
     cybex_showroom_sns = []
     planet_fitness_1_sns = []
@@ -48,10 +49,17 @@ def main():
     sns_by_site[12] = YMCA_sns
     sns_by_site[13] = holiday_inn_sns
     sns_by_site[14] = planet_fitness_2_sns
+    return sns_by_site
+    
+    
+def time_vs_errors_for_one_site_code(clean_recs, sitecode, username=None, password=None):
+    colors = ['b', 'g', 'r', 'k', 'm']
+    plt.figure()
+    
+    # getting site codes so we can plot by site.
+    sns_by_site = all_sns_by_site(username = username, password = password)
 
     machines = prep.split_up_machine_events(clean_recs)
-    #real_machines = ['G0608625TX022N-8114NZJ                            ', 'G0724770AT052N                                    ']
-    sitecode = 11 # options are 10-14. 11 is the only one with good data. see database for more details
     real_machines = sns_by_site[sitecode]
     
     num_machines_plotted = 0
@@ -83,14 +91,25 @@ def main():
     plt.title('Errors throughout Time, per machine at Site Code ' + str(sitecode), fontsize = 30)
     #plt.xlim([0, 100000000])
     #plt.ylim([0,600])
+    #plt.show()
+    
+def main():
+    username = raw_input("Please enter your username: ")
+    password = raw_input("Please enter your password: ")
+    
+    all_recs = cyb_records.Errors()
+    all_recs.ReadRecords(username = username, password = password)
+    print 'Number of total Events', len(all_recs.records)
+
+    #clean_recs = clean_events.CleanEvents(all_recs.records)
+    clean_recs_all = list(all_recs.records)
+    clean_recs_no_watchdogs = clean_events.remove_watchdogs(list(all_recs.records))
+    print 'Number of clean events (without watchdogs): ', len(clean_recs_no_watchdogs)
+    
+    time_vs_errors_for_one_site_code(clean_recs_all, 11, password = password, username = username)
+    time_vs_errors_for_one_site_code(clean_recs_no_watchdogs, 11, password = password, username = username)
     plt.show()
     
-    
-    #errors = CorrErrDist(clean_recs)
-    #print 'Number of dict entries', len(errors)
-
-    #for key in errors.keys():
-    #     print "Error id =", key, "Correlation =", thinkstats2.SerialCorr(errors.get(key)), "List length =", len(errors.get(key))
-
 if __name__ == '__main__':
     main()
+    
