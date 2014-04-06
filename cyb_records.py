@@ -7,6 +7,8 @@ import sys
 import os
 from operator import itemgetter, attrgetter
 
+debugging = False
+
 class Record(object):
     """Represents a record."""
 
@@ -51,8 +53,10 @@ class Table(object):
             password = raw_input("Please enter your password: ")
         else:
             pass # password already exists
-            
-        
+             
+        if debugging:
+            print('Connecting to DB with username: ' + str(username))
+            print('Connecting to DB with password: ' + str(password))
         
         connect_string = 'DRIVER={SQL Server}; SERVER=medtweb2; DATABASE=MachineData; UID=' + username + '; PWD=' + password
         #print connect_string
