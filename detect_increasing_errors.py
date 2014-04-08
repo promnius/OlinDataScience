@@ -11,9 +11,13 @@ import Pmf
 import myplot
 
 def GetErrorTimestamps(records):
+	"""
+	Create a dictionary. Go through records, and for each type of events create a key; append
+	the timestamp value for each key. Return the dictionary.
+	"""
 	ErrorDict = {}
 	prev_sn = ""
-	from_date = 1377993600		# Sept 01, 2013
+	from_date = 1385856000		# Dec 01, 2013
 	today = 1396569600			# April 04, 2014
 
 	for record in records:
@@ -30,36 +34,69 @@ def GetErrorTimestamps(records):
 
 	return ErrorDict
 
-def Buckets(records):
+def GetErrorsPerWeek(records):
+	"""
+	Create a new dictionary. For each existing key, create a like key; run through the values
+	and for each new week add them up. Append the length of the values in one week to the new
+	key.
+	"""
+
 	ErrorDict = {}
-	prev_sn = ""
-	from_date = 1377993600		# Sept 01, 2013
-	interval = 604800			# One week in seconds
+	from_date = 1385856000		# Dec 01, 2013
+	today = 1396828800		# Apr 07, 2014
+	one_week = 604800
+	i = 0
 
 	for record in records:
-		x = 1
-
-	return ErrorDict
-
-def GetErrorsPerWeek(record, from_date, to_date):
-	seconds = int(time.mktime(record.timestamp.timetuple()))
-	if seconds > from_date:
+		seconds = int(time.mktime(record.timestamp.timetuple()))
+		# Skip iteration if it's before the start date of the studied time period
+		if seconds < from_date or seconds > today:
+			continue
+		
+		# Get existing data for this error ID if it exists, otherwise create an empty dict
 		if record.event_id in ErrorDict.keys():
-			timestamp_list = ErrorDict.get(record.event_id)
-			timestamp_list.append(record.timestamp)
-			ErrorDict[record.event_id] = timestamp_list
+			CurrentError = ErrorDict.get(record.event_id)
 		else:
-			timestamp_list = []
-			timestamp_list.append(record.timestamp)
-			ErrorDict[record.event_id] = timestamp_list
+			CurrentError = {}
+		
+		# If the error timestamp is after the current week, reset the current week to this one
+		if seconds > (from_date + one_week):
+			from_date = seconds - 1
+			i = 0
+		
+		# If it's the first error of the week, create the entry in the current dictionary, and count 1 error
+		if i == 0:
+			current_week = record.timestamp
+			CurrentError[current_week] = 1
+			i += 1
+		# Otherwise, just increment the number of errors for that week
+		elif current_week not in CurrentError.keys():
+			CurrentError[current_week] = 1
+		else:
+			CurrentError[current_week] += 1
+		
+		# Save the data to the errors dictionary
+		ErrorDict[record.event_id] = CurrentError
+	
+ 	return ErrorDict
+
+def SumErrors(ErrorDict):
+	total = 0
+	for key in ErrorDict.keys():
+		total += ErrorDict.get(key)
+
+	return total
 
 def ErrorsPerTime(records):
+	"""
+	For each key, create a list. Make a CDF from that list.
+	"""
 	all_cdfs = []
 
 	for key in records.keys():
 		value = records.get(key)
 		
-		if len(value) > 15:
+		if len(value) > 30:
 			cdf = Cdf.MakeCdfFromList(value, key)
 			all_cdfs.append(cdf)
 
@@ -70,21 +107,32 @@ def main():
 	all_recs.ReadRecords()
 	print 'Number of total stats', len(all_recs.records)
 
-	# clean_recs = clean_events.CleanEvents(all_recs.records)
-	# print 'Number of clean events', len(clean_recs)
+	ErrorNames = {"0x80100009": "Watchdog", \
+		"0x80100008": "Approaching over-temp", \
+		"0x80100005": "Communication issue", \
+		"0x80100007": "Controller foldback", \
+		"0x80200062": "Unknown"}
 
-	event_timestamps = GetErrorTimestamps(all_recs.records)
-	print 'Number of event codes', len(event_timestamps)
-	for key in event_timestamps.keys():
-		print key, len(event_timestamps[key])
+	pmfs = []
 
-	cdf = ErrorsPerTime(event_timestamps)
-	myplot.Cdfs(cdf)
-	myplot.Show(title="CDF: errors over time | 2014-04-04", xlabel = 'Date', ylabel = 'CDF')
+	errors = GetErrorsPerWeek(all_recs.records)
+	for key in errors.keys():
+		if SumErrors(errors.get(key)) > 30:
+			pmf = Pmf.MakeHistFromDict(errors.get(key), ErrorNames.get(key))
+			pmfs.append(pmf)
+	myplot.Pmfs(pmfs)
+	myplot.Show(title="Histogram: errors rate | 2014-04-08", xlabel = 'Date', ylabel = 'Errors per week')
 
-	# cdf = ErrorsPerTime(event_timestamps)
-	# myplot.Pmfs(pmf)
-	# myplot.Show(title="PMF: errors over time | 2014-04-04", xlabel = 'Date', ylabel = 'PMF')
+	#event_timestamps = GetErrorTimestamps(all_recs.records)
+	#print 'Number of event codes', len(event_timestamps)
+	# for key in event_timestamps.keys():
+	# 	print key, len(event_timestamps[key])
+
+	#error_rates = GetErrorsPerWeek(event_timestamps)
+
+	# cdf = ErrorsPerTime(error_rates)
+	# myplot.Cdfs(cdf)
+	# myplot.Show(title="CDF: errors over time | 2014-04-04", xlabel = 'Date', ylabel = 'CDF')
 
 if __name__ == '__main__':
 	main()
