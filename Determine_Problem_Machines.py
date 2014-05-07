@@ -11,8 +11,10 @@ import timeseries_plots
 import matplotlib.pyplot as plt
 
 # NEED WAY OF AUTOGRABBING THIS!!
-todays_date = 1399235139 
+one_day = 86400
 one_week = 604800 # seconds
+todays_date = int((time.time()/one_day)+1)*one_day
+
 
 debugging_lev1 = True # basic code debugging and correcting coding errors. No need to use if code is working.
 debugging_lev2 = True # useful and informative information, but not directly pertaining to the output of the script.
