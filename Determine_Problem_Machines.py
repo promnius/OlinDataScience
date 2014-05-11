@@ -19,15 +19,12 @@ todays_date = int((time.time()/one_day)+1)*one_day
 sixty_days_ago = todays_date - sixty_days
 print todays_date, time.strftime("%Y-%b-%d")
 
-
 debugging_lev1 = True # basic code debugging and correcting coding errors. No need to use if code is working.
 debugging_lev2 = True # useful and informative information, but not directly pertaining to the output of the script.
-
     
 def assess_machine(machine):
     machine_sn = machine[0].sn # this function really only uses the sn for debugging purposes.
-    debugging_print_timestamp = True # leave as true. Turn of this debugging option with debugging_lev1. This variable
-    # just limits the number of print statements.
+    debugging_print_timestamp = True
     events_week_1 = 0
     events_week_2 = 0
     events_week_3 = 0
@@ -47,21 +44,19 @@ def assess_machine(machine):
         error_latency =  todays_date - current_timestamp_epoch
         if error_latency < one_week:
             events_week_1 += 1
-        elif error_latency < 2* one_week:
+        elif error_latency < (2*one_week) and error_latency > (1*one_week):
             events_week_2 += 1
-        elif error_latency < 3* one_week:
+        elif error_latency < (3*one_week) and error_latency > (2*one_week):
             events_week_3 += 1
-        elif error_latency < 4* one_week:
+        elif error_latency < (4*one_week) and error_latency > (3*one_week):
             events_week_4 += 1
 
-    if debugging_lev1: 
-        print str(machine_sn), "# of recent errors: ", events_week_1
-        
     # Compute cost
     cost = 4*events_week_1 + 3*events_week_2 + 2*events_week_3 + 1*events_week_4   
     if debugging_lev1: 
-        print"Cost: ", str(cost)
-        print("")
+        print machine_sn[:-20], "# recent events: ", events_week_1, events_week_2, events_week_3, events_week_4
+        print "Cost: ", cost
+        print ""
         
     return cost
 
