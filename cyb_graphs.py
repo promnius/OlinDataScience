@@ -18,9 +18,9 @@ def GetErrorsPerWeek(records, machine_filter = []):
 	MachineDict = {}
 	one_day = 86400
 	one_week = 604800
-	sixty_days = 5184000
+	eight_weeks = 4838400
 	today = int((time.time()/one_day)+1)*one_day
-	from_date = today - sixty_days
+	from_date = today - eight_weeks
 
 	i = 0
 
